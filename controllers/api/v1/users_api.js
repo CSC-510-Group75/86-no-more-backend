@@ -493,6 +493,40 @@ console.log(inventoryhistory);
   });
 };
 
+module.exports.resetReduction = async function (req, res) {
+  // let inventory = await Inventory.findOne({ itemname: req.body.itemname });
+  
+  try {
+    Reduction.deleteMany({})
+
+    const metrics = ["Items", "Tons", "Gallons", "Kilograms"];
+    const resultsArray = [];
+
+    // Loop through each metric and create the object
+    for (const metric of metrics) {
+      const menu = await Reduction.create({
+        metric: metric,
+        amount: 0,
+        total: 0,
+      });
+
+      // Add each created menu to the results array
+      resultsArray.push(menu);
+    }
+
+    return res.json(200, {
+      message: "Reset Complete!!",
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.json(500, {
+      message: "NOT RESET",
+    });
+  }
+};
+
 module.exports.createApplication = async function (req, res) {
   // let user = await User.findOne({ _id: req.body.id });
   check = req.body.skills;
