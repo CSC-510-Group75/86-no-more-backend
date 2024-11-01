@@ -7,6 +7,7 @@ const Application = require('../../../models/application');
 const Inventory = require("../../../models/inventory");
 const Menu = require("../../../models/menu");
 const Inventoryhistory = require("../../../models/inventoryhistory");
+const Reduction = require("../../../models/reduction");
 
 
 module.exports.createSession = async function (req, res) {
@@ -179,10 +180,17 @@ module.exports.editItem = async function (req, res) {
      
       let inventory = await Inventory.findOne({itemname: new RegExp('^'+req.body.itemname+'$', "i")});
 
+      let reduction = await Reduction.findOne({metric: new RegExp('^'+req.body.metric+'$', "i")});
+
+      let oldquantity = inventory.quantity;
+
+      reduction.amount = oldquantity - inventory.quantity;
+
       inventory.quantity = req.body.quantity;
       inventory.metric = req.body.metric;
+
       
-      
+      reduction.save();
       inventory.save();
 
       let inventories = await Inventory.find({}).sort("-createdAt");
@@ -469,6 +477,19 @@ console.log(inventoryhistory);
     message: "List of InventoryHistory",
 
     inventoryhistory: inventoryhistory,
+  });
+};
+
+module.exports.fetchReductionEstimate = async function (req, res) {
+  //let inventoryhistory = await Inventoryhistory.findOne({itemname: new RegExp('^'+req.body.itemname+'$', "i")});
+  let reduction = await Reduction.find({});
+
+  //Whenever we want to send back JSON data
+console.log(inventoryhistory);
+  return res.json(200, {
+    message: "List of Waste Reduction",
+
+    reduction: reduction,
   });
 };
 

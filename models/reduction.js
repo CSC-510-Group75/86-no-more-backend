@@ -18,6 +18,6 @@ const reductionSchema = new mongoose.Schema({
 });
 
 
-const Food = mongoose.model('reduction', reductionSchema);
+const Reduction = mongoose.model('reduction', reductionSchema);
 
-module.exports = Food;
+module.exports = Reduction;
