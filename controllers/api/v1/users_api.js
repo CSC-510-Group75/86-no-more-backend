@@ -180,18 +180,22 @@ module.exports.editItem = async function (req, res) {
      
       let inventory = await Inventory.findOne({itemname: new RegExp('^'+req.body.itemname+'$', "i")});
 
+      let inventoryhistory = await Inventoryhistory.findOne({itemname: new RegExp('^'+req.body.itemname+'$', "i")});
+
+
       let reduction = await Reduction.findOne({metric: new RegExp('^'+req.body.metric+'$', "i")});
 
-      let oldquantity = inventory.quantity;
+      let oldquantity = inventoryhistory.quantity;
 
-      reduction.amount = oldquantity - inventory.quantity;
+      reduction.amount = oldquantity - req.body.quantity;
 
-      inventory.quantity = req.body.quantity;
-      inventory.metric = req.body.metric;
+      inventoryhistory.quantity = req.body.quantity;
+      inventoryhistory.metric = req.body.metric;
 
       
       reduction.save();
-      inventory.save();
+      // inventory.save();
+      inventoryhistory.save();
 
       let inventories = await Inventory.find({}).sort("-createdAt");
 
@@ -450,6 +454,15 @@ module.exports.createInventoryHistory = async function (req, res) {
       quantity:req.body.quantity,
       metric:req.body.metric
     });
+
+    let reduction = await Reduction.findOne({metric: new RegExp('^'+req.body.metric+'$', "i")});
+
+    reduction.total = reduction.total + Number(req.body.quantity);
+
+    await reduction.save();
+
+    console.log(reduction)
+
     console.log(inventoryhistory);
     return res.json(200, {
       data: {
@@ -485,7 +498,7 @@ module.exports.fetchReductionEstimate = async function (req, res) {
   let reduction = await Reduction.find({});
 
   //Whenever we want to send back JSON data
-console.log(inventoryhistory);
+  console.log(reduction);
   return res.json(200, {
     message: "List of Waste Reduction",
 
