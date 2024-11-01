@@ -18,6 +18,6 @@ const reductionSchema = new mongoose.Schema({
 });
 
 
-const Reduction = mongoose.model('reduction', reductionSchema);
+const Reduction = mongoose.model('Reduction', reductionSchema);
 
 module.exports = Reduction;

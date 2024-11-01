@@ -497,24 +497,25 @@ module.exports.resetReduction = async function (req, res) {
   // let inventory = await Inventory.findOne({ itemname: req.body.itemname });
   
   try {
-    Reduction.deleteMany({})
+    await Reduction.deleteMany({});
 
     const metrics = ["Items", "Tons", "Gallons", "Kilograms"];
     const resultsArray = [];
 
     // Loop through each metric and create the object
     for (const metric of metrics) {
-      const menu = await Reduction.create({
+      const reduction = await Reduction.create({
         metric: metric,
         amount: 0,
         total: 0,
       });
 
       // Add each created menu to the results array
-      resultsArray.push(menu);
+      resultsArray.push(reduction);
     }
 
     return res.json(200, {
+      data: resultsArray,
       message: "Reset Complete!!",
       success: true,
     });
