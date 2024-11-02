@@ -67,7 +67,7 @@ app.use(passport.setAuthenticatedUser);
 //Use express router
 
 app.use('/',require('./routes'));
-
+app.use('/resources', resourceRoutes);
 app.listen(port, function(err){
     if (err){
         console.log('Error',err)
