@@ -7,6 +7,7 @@ const Application = require('../../../models/application');
 const Inventory = require("../../../models/inventory");
 const Menu = require("../../../models/menu");
 const Inventoryhistory = require("../../../models/inventoryhistory");
+const Reduction = require("../../../models/reduction");
 
 
 module.exports.createSession = async function (req, res) {
@@ -179,11 +180,22 @@ module.exports.editItem = async function (req, res) {
      
       let inventory = await Inventory.findOne({itemname: new RegExp('^'+req.body.itemname+'$', "i")});
 
-      inventory.quantity = req.body.quantity;
-      inventory.metric = req.body.metric;
+      let inventoryhistory = await Inventoryhistory.findOne({itemname: new RegExp('^'+req.body.itemname+'$', "i")});
+
+
+      let reduction = await Reduction.findOne({metric: new RegExp('^'+req.body.metric+'$', "i")});
+
+      let oldquantity = inventoryhistory.quantity;
+
+      reduction.amount = oldquantity - req.body.quantity;
+
+      inventoryhistory.quantity = req.body.quantity;
+      inventoryhistory.metric = req.body.metric;
+
       
-      
-      inventory.save();
+      reduction.save();
+      // inventory.save();
+      inventoryhistory.save();
 
       let inventories = await Inventory.find({}).sort("-createdAt");
 
@@ -442,6 +454,15 @@ module.exports.createInventoryHistory = async function (req, res) {
       quantity:req.body.quantity,
       metric:req.body.metric
     });
+
+    let reduction = await Reduction.findOne({metric: new RegExp('^'+req.body.metric+'$', "i")});
+
+    reduction.total = reduction.total + Number(req.body.quantity);
+
+    await reduction.save();
+
+    console.log(reduction)
+
     console.log(inventoryhistory);
     return res.json(200, {
       data: {
@@ -470,6 +491,54 @@ console.log(inventoryhistory);
 
     inventoryhistory: inventoryhistory,
   });
+};
+
+module.exports.fetchReductionEstimate = async function (req, res) {
+  //let inventoryhistory = await Inventoryhistory.findOne({itemname: new RegExp('^'+req.body.itemname+'$', "i")});
+  let reduction = await Reduction.find({});
+
+  //Whenever we want to send back JSON data
+  console.log(reduction);
+  return res.json(200, {
+    message: "List of Waste Reduction",
+
+    reduction: reduction,
+  });
+};
+
+module.exports.resetReduction = async function (req, res) {
+  // let inventory = await Inventory.findOne({ itemname: req.body.itemname });
+  
+  try {
+    await Reduction.deleteMany({});
+
+    const metrics = ["Items", "Tons", "Gallons", "Kilograms"];
+    const resultsArray = [];
+
+    // Loop through each metric and create the object
+    for (const metric of metrics) {
+      const reduction = await Reduction.create({
+        metric: metric,
+        amount: 0,
+        total: 0,
+      });
+
+      // Add each created menu to the results array
+      resultsArray.push(reduction);
+    }
+
+    return res.json(200, {
+      data: resultsArray,
+      message: "Reset Complete!!",
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.json(500, {
+      message: "NOT RESET",
+    });
+  }
 };
 
 module.exports.createApplication = async function (req, res) {

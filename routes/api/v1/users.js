@@ -27,5 +27,7 @@ router.post('/createinventoryHistory',usersApi.createInventoryHistory);
 router.get('/fetchinventoryHistory',usersApi.fetchInventoryHistory);
 router.post('/deleteMenu',usersApi.deleteMenu);
 router.post('/deleteInventoryItem',usersApi.deleteInventoryItem);
+router.get('/fetchReductionEstimate',usersApi.fetchReductionEstimate);
+router.post('/resetReductionEstimate',usersApi.resetReduction)
 
 module.exports = router;
