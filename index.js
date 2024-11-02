@@ -17,7 +17,7 @@ const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
 
 const passportJWT = require('./config/passport-jwt-strategy');
-
+const dashboardRoutes = require('./routes/dashboard');
 app.use(cors({
     origin:'http://localhost:3000/'
 }));
@@ -67,6 +67,7 @@ app.use(passport.setAuthenticatedUser);
 //Use express router
 
 app.use('/',require('./routes'));
+app.use('/dashboard', dashboardRoutes);
 app.use('/resources', resourceRoutes);
 app.listen(port, function(err){
     if (err){
