@@ -68,6 +68,7 @@ app.use(passport.setAuthenticatedUser);
 
 app.use('/',require('./routes'));
 app.use('/dashboard', dashboardRoutes);
+app.use('/resources', resourceRoutes);
 app.listen(port, function(err){
     if (err){
         console.log('Error',err)
