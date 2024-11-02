@@ -38,6 +38,32 @@ describe('Tasks API', () => {
 
     })
 
+    describe("GET /api/v1/users/fetchReductionEstimate" , () => {
+
+        it("IT SHOULD RETURN ALL THE APPLICATIONS" , (done) => {
+            // const task = {
+            //     email:'shaangzb@gmail.com',
+            //     password:'123',
+                
+            // };
+
+            chai.request('http://localhost:8000')
+                .get("/api/v1/users/fetchReductionEstimate")
+                
+                .end((err,response) => {
+                    
+                    response.body.should.be.a('object');
+    
+                    console.log('*********',response.body)
+                  
+
+                done();
+
+                });
+        })
+
+    })
+
     describe("GET /api/v1/users/" , () => {
 
         it("IT SHOULD RETURN ALL THE JOBS" , (done) => {
@@ -128,6 +154,87 @@ describe('Tasks API', () => {
 
     })
 
+    describe("POST /api/v1/users/createinventoryHistory" , () => {
+
+        it("IT SHOULD RETURN THE INVENTORY" , (done) => {
+            const body = {
+                
+                itemname: 'butter',
+                quantity: '5',
+                metric: 'Items'
+                
+            };
+
+            chai.request('http://localhost:8000')
+                .post("/api/v1/users/createjob")
+                .send(body)
+                .end((err,response) => {
+                    
+                    response.body.should.be.a('object');
+    
+                    console.log('*********',response.body)
+                  
+
+                done();
+
+                });
+        })
+
+    })
+
+    describe("POST /api/v1/users/editItem" , () => {
+
+        it("IT SHOULD RETURN THE ITEM" , (done) => {
+            const body = {
+                
+                itemname: 'butter',
+                quantity: '2',
+                metric: 'Items'
+                
+            };
+
+            chai.request('http://localhost:8000')
+                .post("/api/v1/users/createjob")
+                .send(body)
+                .end((err,response) => {
+                    
+                    response.body.should.be.a('object');
+    
+                    console.log('*********',response.body)
+                  
+
+                done();
+
+                });
+        })
+
+    })
+
+    describe("POST /api/v1/users/resetReductionEstimate" , () => {
+
+        it("IT SHOULD RETURN ALL THE JOBS" , (done) => {
+            // const task = {
+            //     email:'shaangzb@gmail.com',
+            //     password:'123',
+                
+            // };
+
+            chai.request('http://localhost:8000')
+                .get("/api/v1/users/")
+                
+                .end((err,response) => {
+                    
+                    response.body.should.be.a('object');
+    
+                    console.log('*********',response.body)
+                  
+
+                done();
+
+                });
+        })
+
+    })
 
     describe("GET /api/v1/users/search" , () => {
 
